@@ -43,6 +43,7 @@ class Stream extends eventemitter3_1.EventEmitter {
         this.stream.addEventListener('open', this.onOpen);
         this.stream.addEventListener('close', this.onClose);
         this.stream.addEventListener('message', this.onMessage);
+        this.stream.addEventListener('error', this.onError);
     }
     genId() {
         return (++this.idCounter).toString();
@@ -91,6 +92,12 @@ class Stream extends eventemitter3_1.EventEmitter {
         }
     }
     onClose() {
+        if (this.state === 'connected') {
+            this.state = 'reconnecting';
+            this.emit('_disconnected_');
+        }
+    }
+    onError() {
         if (this.state === 'connected') {
             this.state = 'reconnecting';
             this.emit('_disconnected_');
@@ -155,6 +162,9 @@ __decorate([
 __decorate([
     autobind_decorator_1.default
 ], Stream.prototype, "onClose", null);
+__decorate([
+    autobind_decorator_1.default
+], Stream.prototype, "onError", null);
 __decorate([
     autobind_decorator_1.default
 ], Stream.prototype, "onMessage", null);

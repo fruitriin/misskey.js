@@ -26,17 +26,24 @@ class APIClient {
                 credentials: 'omit',
                 cache: 'no-cache',
             }).then(async (res) => {
-                const body = res.status === 204 ? null : await res.json();
-                if (res.status === 200) {
-                    resolve(body);
+                try {
+                    const body = res.status === 204 ? null : await res.json();
+                    if (res.status === 200) {
+                        resolve(body);
+                    }
+                    else if (res.status === 204) {
+                        resolve(null);
+                    }
+                    else {
+                        reject({
+                            [MK_API_ERROR]: true,
+                            ...body.error,
+                        });
+                    }
                 }
-                else if (res.status === 204) {
-                    resolve(null);
-                }
-                else {
+                catch (e) {
                     reject({
-                        [MK_API_ERROR]: true,
-                        ...body.error,
+                        message: e,
                     });
                 }
             }).catch(reject);

@@ -27,6 +27,7 @@ export default class Stream extends EventEmitter<StreamEvents> {
     disconnectToChannel(connection: NonSharedConnection): void;
     private onOpen;
     private onClose;
+    private onError;
     private onMessage;
     send(typeOrPayload: any, payload?: any): void;
     close(): void;
