@@ -56,7 +56,7 @@ export default class Stream extends EventEmitter<StreamEvents> {
 		this.stream.addEventListener('close', this.onClose);
 		this.stream.addEventListener('message', this.onMessage);
 
-		this.stream.onerror = console.error
+		this.stream.onerror = console.error;
 	}
 
 	@autobind
@@ -196,7 +196,7 @@ export default class Stream extends EventEmitter<StreamEvents> {
 	 */
 	@autobind
 	public close(): void {
-		if(this.stream.readyState !== 3 ) {
+		if(this.stream.readyState === WebSocket.OPEN ) {
 			this.stream.close();
 		}
 	}
