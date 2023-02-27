@@ -39,6 +39,7 @@ class Stream extends eventemitter3_1.EventEmitter {
         this.stream = new reconnecting_websocket_1.default(`${wsOrigin}/streaming?${query}`, '', {
             minReconnectionDelay: 1,
             WebSocket: options.WebSocket,
+            ...options,
         });
         this.stream.addEventListener('open', this.onOpen);
         this.stream.addEventListener('close', this.onClose);

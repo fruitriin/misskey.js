@@ -115,7 +115,20 @@ export declare type DriveFile = {
     properties: Record<string, any>;
 };
 export declare type DriveFolder = TODO;
-export declare type GalleryPost = TODO;
+export declare type GalleryPost = {
+    id: ID;
+    createdAt: DateString;
+    updatedAt: DateString;
+    userId: User['id'];
+    user: User;
+    title: string;
+    description: string | null;
+    fileIds: DriveFile['id'][];
+    files: DriveFile[];
+    isSensitive: boolean;
+    likedCount: number;
+    isLiked?: boolean;
+};
 export declare type Note = {
     id: ID;
     createdAt: DateString;
@@ -246,17 +259,30 @@ export declare type LiteInstanceMetadata = {
     name: string | null;
     uri: string;
     description: string | null;
+    langs: string[];
     tosUrl: string | null;
+    repositoryUrl: string;
+    feedbackUrl: string;
     disableRegistration: boolean;
     disableLocalTimeline: boolean;
     disableGlobalTimeline: boolean;
     driveCapacityPerLocalUserMb: number;
     driveCapacityPerRemoteUserMb: number;
+    emailRequiredForSignup: boolean;
     enableHcaptcha: boolean;
     hcaptchaSiteKey: string | null;
     enableRecaptcha: boolean;
     recaptchaSiteKey: string | null;
+    enableTurnstile: boolean;
+    turnstileSiteKey: string | null;
     swPublickey: string | null;
+    themeColor: string | null;
+    mascotImageUrl: string | null;
+    bannerUrl: string | null;
+    errorImageUrl: string | null;
+    iconUrl: string | null;
+    backgroundImageUrl: string | null;
+    logoImageUrl: string | null;
     maxNoteTextLength: number;
     enableEmail: boolean;
     enableTwitterIntegration: boolean;
@@ -264,6 +290,8 @@ export declare type LiteInstanceMetadata = {
     enableDiscordIntegration: boolean;
     enableServiceWorker: boolean;
     emojis: CustomEmoji[];
+    defaultDarkTheme: string | null;
+    defaultLightTheme: string | null;
     ads: {
         id: ID;
         ratio: number;
@@ -271,8 +299,14 @@ export declare type LiteInstanceMetadata = {
         url: string;
         imageUrl: string;
     }[];
+    translatorAvailable: boolean;
 };
 export declare type DetailedInstanceMetadata = LiteInstanceMetadata & {
+    pinnedPages: string[];
+    pinnedClipId: string | null;
+    cacheRemoteFiles: boolean;
+    requireSetup: boolean;
+    proxyAccountName: string | null;
     features: Record<string, any>;
 };
 export declare type InstanceMetadata = LiteInstanceMetadata | DetailedInstanceMetadata;
