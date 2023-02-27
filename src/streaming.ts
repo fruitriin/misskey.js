@@ -55,7 +55,8 @@ export default class Stream extends EventEmitter<StreamEvents> {
 		this.stream.addEventListener('open', this.onOpen);
 		this.stream.addEventListener('close', this.onClose);
 		this.stream.addEventListener('message', this.onMessage);
-		this.stream.addEventListener('error', this.onError);
+
+		this.stream.onerror = console.error
 	}
 
 	@autobind
