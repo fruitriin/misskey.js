@@ -195,7 +195,8 @@ export default class Stream extends EventEmitter<StreamEvents> {
 	 */
 	@autobind
 	public close(): void {
-		this.stream.close();
+		if (this.stream.readyState === 1 )
+			this.stream.close();
 	}
 }
 

@@ -133,7 +133,8 @@ class Stream extends eventemitter3_1.EventEmitter {
         this.stream.send(JSON.stringify(data));
     }
     close() {
-        this.stream.close();
+        if (this.stream.readyState === 1)
+            this.stream.close();
     }
 }
 __decorate([
