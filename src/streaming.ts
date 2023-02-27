@@ -50,13 +50,13 @@ export default class Stream extends EventEmitter<StreamEvents> {
 		this.stream = new ReconnectingWebsocket(`${wsOrigin}/streaming?${query}`, '', {
 			minReconnectionDelay: 1, // https://github.com/pladaria/reconnecting-websocket/issues/91
 			WebSocket: options.WebSocket,
-			...options,
 		});
 		this.stream.addEventListener('open', this.onOpen);
 		this.stream.addEventListener('close', this.onClose);
 		this.stream.addEventListener('message', this.onMessage);
 
-		this.stream.onerror = console.error;
+		this.stream.addEventListener('error', console.error);
+
 	}
 
 	@autobind
@@ -196,7 +196,7 @@ export default class Stream extends EventEmitter<StreamEvents> {
 	 */
 	@autobind
 	public close(): void {
-		if(this.stream.readyState === WebSocket.OPEN ) {
+		if (this.stream.readyState === WebSocket.OPEN ) {
 			this.stream.close();
 		}
 	}
@@ -216,7 +216,6 @@ class Pool {
 		this.channel = channel;
 		this.stream = stream;
 		this.id = id;
-
 		this.stream.on('_disconnected_', this.onStreamDisconnected);
 	}
 

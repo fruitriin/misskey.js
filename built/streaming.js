@@ -39,12 +39,11 @@ class Stream extends eventemitter3_1.EventEmitter {
         this.stream = new reconnecting_websocket_1.default(`${wsOrigin}/streaming?${query}`, '', {
             minReconnectionDelay: 1,
             WebSocket: options.WebSocket,
-            ...options,
         });
         this.stream.addEventListener('open', this.onOpen);
         this.stream.addEventListener('close', this.onClose);
         this.stream.addEventListener('message', this.onMessage);
-        this.stream.addEventListener('error', this.onError);
+        this.stream.addEventListener('error', console.error);
     }
     genId() {
         return (++this.idCounter).toString();
@@ -133,7 +132,7 @@ class Stream extends eventemitter3_1.EventEmitter {
         this.stream.send(JSON.stringify(data));
     }
     close() {
-        if (this.stream.readyState !== 3) {
+        if (this.stream.readyState === WebSocket.OPEN) {
             this.stream.close();
         }
     }
