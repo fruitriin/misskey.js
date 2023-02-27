@@ -50,6 +50,7 @@ export default class Stream extends EventEmitter<StreamEvents> {
 		this.stream = new ReconnectingWebsocket(`${wsOrigin}/streaming?${query}`, '', {
 			minReconnectionDelay: 1, // https://github.com/pladaria/reconnecting-websocket/issues/91
 			WebSocket: options.WebSocket,
+			...options,
 		});
 		this.stream.addEventListener('open', this.onOpen);
 		this.stream.addEventListener('close', this.onClose);
