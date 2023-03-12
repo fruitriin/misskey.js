@@ -53,13 +53,20 @@ export default class Stream extends EventEmitter<StreamEvents> {
 				WebSocket: options.WebSocket,
 			});
 			this.stream.addEventListener('error', (event) => {
+				if (event.target.readyState === WebSocket.CLOSED) {
+					// WebSocketがクローズされたときの処理
+					console.log(`WebSocket closed with code ${event.error.message} and reason ${event.error.stack}`);
+					// Reconnect if using ReconnectingWebSocket
+					// update connection status
+					// Notify application that WebSocket was closed
+					return;
+				}
 				this.emit('_error_', event);
 			});
 			this.stream.addEventListener('open', this.onOpen);
-			this.stream.addEventListener('close', () => {
-				if (this.stream?.readyState !== ReconnectingWebsocket.OPEN) {
-					return;
-				}
+			this.stream.addEventListener('close', (event) => {
+
+				this.emit('_error_', event);
 				this.onClose();
 			});
 			this.stream.addEventListener('message', this.onMessage);
