@@ -51,12 +51,12 @@ export default class Stream extends EventEmitter<StreamEvents> {
 			minReconnectionDelay: 1, // https://github.com/pladaria/reconnecting-websocket/issues/91
 			WebSocket: options.WebSocket,
 		});
+		this.stream.addEventListener('error', (event) => {
+			console.error('WebSocket closed:', event);
+		});
 		this.stream.addEventListener('open', this.onOpen);
 		this.stream.addEventListener('close', this.onClose);
 		this.stream.addEventListener('message', this.onMessage);
-
-		this.stream.addEventListener('error', console.error);
-
 	}
 
 	@autobind
