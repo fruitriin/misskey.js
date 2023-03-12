@@ -5,6 +5,7 @@ declare type AnyOf<T extends Record<any, any>> = T[keyof T];
 declare type StreamEvents = {
     _connected_: void;
     _disconnected_: void;
+    _error_: void;
 } & BroadcastEvents;
 export default class Stream extends EventEmitter<StreamEvents> {
     private stream;
