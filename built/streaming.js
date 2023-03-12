@@ -42,10 +42,14 @@ class Stream extends eventemitter3_1.EventEmitter {
         });
         this.stream.addEventListener('error', (event) => {
             this.emit("_error_", event);
-            this.stream.close();
         });
         this.stream.addEventListener('open', this.onOpen);
-        this.stream.addEventListener('close', this.onClose);
+        this.stream.addEventListener('close', () => {
+            if (this.stream.readyState !== reconnecting_websocket_1.default.OPEN) {
+                return;
+            }
+            this.onClose();
+        });
         this.stream.addEventListener('message', this.onMessage);
     }
     genId() {
@@ -95,9 +99,6 @@ class Stream extends eventemitter3_1.EventEmitter {
         }
     }
     onClose() {
-        if (this.stream.readyState !== reconnecting_websocket_1.default.OPEN) {
-            return;
-        }
         if (this.state === 'connected') {
             this.state = 'reconnecting';
             this.emit('_disconnected_');
