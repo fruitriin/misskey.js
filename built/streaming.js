@@ -41,12 +41,10 @@ class Stream extends eventemitter3_1.EventEmitter {
                 minReconnectionDelay: 1,
                 WebSocket: options.WebSocket,
             });
+            this.stream.onerror = (event) => this.emit('_error_', event);
             this.stream.addEventListener('error', (event) => {
-                if (event.target.readyState === reconnecting_websocket_1.default.CLOSED) {
-                    console.log(`WebSocket closed with code ${event.error.message} and reason ${event.error.stack}`);
-                    return;
-                }
                 this.emit('_error_', event);
+                console.log("debug:", event);
             });
             this.stream.addEventListener('open', this.onOpen);
             this.stream.addEventListener('close', (event) => {

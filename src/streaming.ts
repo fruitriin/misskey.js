@@ -52,16 +52,11 @@ export default class Stream extends EventEmitter<StreamEvents> {
 				minReconnectionDelay: 1, // https://github.com/pladaria/reconnecting-websocket/issues/91
 				WebSocket: options.WebSocket,
 			});
+			this.stream.onerror = (event) => this.emit('_error_', event);
 			this.stream.addEventListener('error', (event) => {
-				if (event.target.readyState === ReconnectingWebsocket.CLOSED) {
-					// WebSocketがクローズされたときの処理
-					console.log(`WebSocket closed with code ${event.error.message} and reason ${event.error.stack}`);
-					// Reconnect if using ReconnectingWebSocket
-					// update connection status
-					// Notify application that WebSocket was closed
-					return;
-				}
 				this.emit('_error_', event);
+				console.log("debug:", event);
+
 			});
 			this.stream.addEventListener('open', this.onOpen);
 			this.stream.addEventListener('close', (event) => {
