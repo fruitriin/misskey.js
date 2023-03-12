@@ -42,8 +42,8 @@ class Stream extends eventemitter3_1.EventEmitter {
                 WebSocket: options.WebSocket,
             });
             this.stream.addEventListener('error', (event) => {
-                if (event.target.readyState === WebSocket.CLOSED) {
-                    console.log(`WebSocket closed with code ${event.code} and reason ${event.reason}`);
+                if (event.target.readyState === reconnecting_websocket_1.default.CLOSED) {
+                    console.log(`WebSocket closed with code ${event.error.message} and reason ${event.error.stack}`);
                     return;
                 }
                 this.emit('_error_', event);
@@ -146,7 +146,7 @@ class Stream extends eventemitter3_1.EventEmitter {
         this.stream?.send(JSON.stringify(data));
     }
     close() {
-        if (this.stream?.readyState === WebSocket.OPEN) {
+        if (this.stream?.readyState === reconnecting_websocket_1.default.OPEN) {
             this.stream?.close();
         }
     }
