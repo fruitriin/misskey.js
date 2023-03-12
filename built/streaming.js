@@ -40,10 +40,12 @@ class Stream extends eventemitter3_1.EventEmitter {
             minReconnectionDelay: 1,
             WebSocket: options.WebSocket,
         });
+        this.stream.addEventListener('error', (event) => {
+            console.error('WebSocket closed:', event);
+        });
         this.stream.addEventListener('open', this.onOpen);
         this.stream.addEventListener('close', this.onClose);
         this.stream.addEventListener('message', this.onMessage);
-        this.stream.addEventListener('error', console.error);
     }
     genId() {
         return (++this.idCounter).toString();
