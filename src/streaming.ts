@@ -19,6 +19,7 @@ type AnyOf<T extends Record<any, any>> = T[keyof T];
 type StreamEvents = {
 	_connected_: void;
 	_disconnected_: void;
+	_error_: void
 } & BroadcastEvents;
 
 /**
@@ -52,6 +53,7 @@ export default class Stream extends EventEmitter<StreamEvents> {
 			WebSocket: options.WebSocket,
 		});
 		this.stream.addEventListener('error', (event) => {
+			this.emit("_error_", event);
 			console.error('WebSocket closed:', event);
 		});
 		this.stream.addEventListener('open', this.onOpen);
