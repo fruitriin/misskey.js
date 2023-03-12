@@ -42,7 +42,6 @@ class Stream extends eventemitter3_1.EventEmitter {
         });
         this.stream.addEventListener('error', (event) => {
             this.emit("_error_", event);
-            console.error('WebSocket closed:', event);
         });
         this.stream.addEventListener('open', this.onOpen);
         this.stream.addEventListener('close', this.onClose);
