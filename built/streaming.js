@@ -36,21 +36,26 @@ class Stream extends eventemitter3_1.EventEmitter {
             _t: Date.now(),
         });
         const wsOrigin = origin.replace('http://', 'ws://').replace('https://', 'wss://');
-        this.stream = new reconnecting_websocket_1.default(`${wsOrigin}/streaming?${query}`, '', {
-            minReconnectionDelay: 1,
-            WebSocket: options.WebSocket,
-        });
-        this.stream.addEventListener('error', (event) => {
-            this.emit("_error_", event);
-        });
-        this.stream.addEventListener('open', this.onOpen);
-        this.stream.addEventListener('close', () => {
-            if (this.stream.readyState !== reconnecting_websocket_1.default.OPEN) {
-                return;
-            }
-            this.onClose();
-        });
-        this.stream.addEventListener('message', this.onMessage);
+        try {
+            this.stream = new reconnecting_websocket_1.default(`${wsOrigin}/streaming?${query}`, '', {
+                minReconnectionDelay: 1,
+                WebSocket: options.WebSocket,
+            });
+            this.stream.addEventListener('error', (event) => {
+                this.emit('_error_', event);
+            });
+            this.stream.addEventListener('open', this.onOpen);
+            this.stream.addEventListener('close', () => {
+                if (this.stream?.readyState !== reconnecting_websocket_1.default.OPEN) {
+                    return;
+                }
+                this.onClose();
+            });
+            this.stream.addEventListener('message', this.onMessage);
+        }
+        catch (error) {
+            console.error(`WebSocketの接続に失敗しました: ${error}`);
+        }
     }
     genId() {
         return (++this.idCounter).toString();
@@ -136,11 +141,11 @@ class Stream extends eventemitter3_1.EventEmitter {
             type: typeOrPayload,
             body: payload,
         };
-        this.stream.send(JSON.stringify(data));
+        this.stream?.send(JSON.stringify(data));
     }
     close() {
-        if (this.stream.readyState === WebSocket.OPEN) {
-            this.stream.close();
+        if (this.stream?.readyState === WebSocket.OPEN) {
+            this.stream?.close();
         }
     }
 }

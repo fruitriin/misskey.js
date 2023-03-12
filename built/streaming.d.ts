@@ -8,7 +8,7 @@ declare type StreamEvents = {
     _error_: void;
 } & BroadcastEvents;
 export default class Stream extends EventEmitter<StreamEvents> {
-    private stream;
+    private stream?;
     state: 'initializing' | 'reconnecting' | 'connected';
     private sharedConnectionPools;
     private sharedConnections;

@@ -26,7 +26,7 @@ type StreamEvents = {
  * Misskey stream connection
  */
 export default class Stream extends EventEmitter<StreamEvents> {
-	private stream: ReconnectingWebsocket;
+	private stream?: ReconnectingWebsocket;
 	public state: 'initializing' | 'reconnecting' | 'connected' = 'initializing';
 	private sharedConnectionPools: Pool[] = [];
 	private sharedConnections: SharedConnection[] = [];
@@ -47,22 +47,26 @@ export default class Stream extends EventEmitter<StreamEvents> {
 		});
 
 		const wsOrigin = origin.replace('http://', 'ws://').replace('https://', 'wss://');
-
-		this.stream = new ReconnectingWebsocket(`${wsOrigin}/streaming?${query}`, '', {
-			minReconnectionDelay: 1, // https://github.com/pladaria/reconnecting-websocket/issues/91
-			WebSocket: options.WebSocket,
-		});
-		this.stream.addEventListener('error', (event) => {
-			this.emit("_error_", event);
-		});
-		this.stream.addEventListener('open', this.onOpen);
-		this.stream.addEventListener('close', () => {
-			if (this.stream.readyState !== ReconnectingWebsocket.OPEN) {
-				return;
-			}
-			this.onClose();
-		});
-		this.stream.addEventListener('message', this.onMessage);
+		try {
+			this.stream = new ReconnectingWebsocket(`${wsOrigin}/streaming?${query}`, '', {
+				minReconnectionDelay: 1, // https://github.com/pladaria/reconnecting-websocket/issues/91
+				WebSocket: options.WebSocket,
+			});
+			this.stream.addEventListener('error', (event) => {
+				this.emit('_error_', event);
+			});
+			this.stream.addEventListener('open', this.onOpen);
+			this.stream.addEventListener('close', () => {
+				if (this.stream?.readyState !== ReconnectingWebsocket.OPEN) {
+					return;
+				}
+				this.onClose();
+			});
+			this.stream.addEventListener('message', this.onMessage);
+		} catch (error) {
+			// エラー処理を行う
+			console.error(`WebSocketの接続に失敗しました: ${error}`);
+		}
 	}
 
 	@autobind
@@ -194,7 +198,7 @@ export default class Stream extends EventEmitter<StreamEvents> {
 			body: payload,
 		};
 
-		this.stream.send(JSON.stringify(data));
+		this.stream?.send(JSON.stringify(data));
 	}
 
 	/**
@@ -202,8 +206,8 @@ export default class Stream extends EventEmitter<StreamEvents> {
 	 */
 	@autobind
 	public close(): void {
-		if (this.stream.readyState === WebSocket.OPEN ) {
-			this.stream.close();
+		if (this.stream?.readyState === WebSocket.OPEN ) {
+			this.stream?.close();
 		}
 	}
 }
