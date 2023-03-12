@@ -44,10 +44,12 @@ class Stream extends eventemitter3_1.EventEmitter {
             this.stream.onerror = (event) => this.emit('_error_', event);
             this.stream.addEventListener('error', (event) => {
                 this.emit('_error_', event);
-                console.log("debug:", event);
             });
             this.stream.addEventListener('open', this.onOpen);
             this.stream.addEventListener('close', (event) => {
+                if (event.target.readyState === reconnecting_websocket_1.default.CLOSED) {
+                    return;
+                }
                 this.emit('_error_', event);
                 this.onClose();
             });
