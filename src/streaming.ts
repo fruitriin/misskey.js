@@ -52,6 +52,8 @@ export default class Stream extends EventEmitter<StreamEvents> {
 				minReconnectionDelay: 1, // https://github.com/pladaria/reconnecting-websocket/issues/91
 				WebSocket: options.WebSocket,
 			});
+			// @ts-ignore
+			this.stream._handleTimeout = () => {};
 			this.stream.onerror = (event) => this.emit('_error_', event);
 			this.stream.addEventListener('error', (event) => {
 				this.emit('_error_', event);

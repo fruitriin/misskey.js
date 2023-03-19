@@ -41,6 +41,7 @@ class Stream extends eventemitter3_1.EventEmitter {
                 minReconnectionDelay: 1,
                 WebSocket: options.WebSocket,
             });
+            this.stream._handleTimeout = () => { };
             this.stream.onerror = (event) => this.emit('_error_', event);
             this.stream.addEventListener('error', (event) => {
                 this.emit('_error_', event);
